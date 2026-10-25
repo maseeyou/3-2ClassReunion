@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>同窓会ディナー比較・本音レビュー</title>
+  <style>
+    :root {
+      --bg-main: #0f172a;
+      --bg-card: #1e293b;
+      --bg-sub: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-gold: #e2b34a;
+      --accent-gold-soft: rgba(226, 179, 74, 0.15);
+      --border-color: #334155;
+      --status-best: #38bdf8;
+      --status-good: #4ade80;
+      --status-warn: #fb923c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 24px 16px 48px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* ヘッダー */
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .header-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--accent-gold);
+      background: var(--accent-gold-soft);
+      border: 1px solid rgba(226, 179, 74, 0.3);
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    /* 比較カードコンテナ */
+    .comparison-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .plan-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .plan-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 4px;
+      background-color: var(--accent-gold);
+    }
+
+    .plan-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .plan-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .plan-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .plan-location {
+      font-size: 0.8rem;
+      color: var(--accent-gold);
+      font-weight: 600;
+    }
+
+    /* 評価スコアグリッド */
+    .metrics-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+      background: var(--bg-sub);
+      padding: 10px 12px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .metric-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .metric-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .metric-icon {
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .icon-double-circle { color: var(--status-best); }
+    .icon-circle { color: var(--status-good); }
+    .icon-triangle { color: var(--status-warn); }
+
+    /* 本音レビュー・感想 */
+    .review-box {
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 8px;
+      padding: 12px 14px;
+      border-left: 2px solid var(--accent-gold);
+    }
+
+    .review-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .review-content {
+      font-size: 0.875rem;
+      color: #e2e8f0;
+      line-height: 1.55;
+    }
+
+    /* 補足・追記バッジ */
+    .sub-note {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.775rem;
+      color: var(--text-muted);
+    }
+
+    /* 一覧テーブル（PC/大画面用サマリー） */
+    .table-container {
+      margin-top: 28px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow-x: auto;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: rgba(255, 255, 255, 0.03);
+      color: var(--accent-gold);
+      font-weight: 600;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td.score {
+      text-align: center;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    /* フッター */
+    .footer-note {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- ヘッダー -->
+    <div class="header">
+      <div class="header-badge">幹事の本音レビュー</div>
+      <h1>同窓会ディナー 3大候補 比較表</h1>
+      <p>料理の満足度・所要時間・予算感を踏まえた率直な所感まとめ</p>
+    </div>
+
+    <!-- カード形式（スマホで最も見やすい形式） -->
+    <div class="comparison-grid">
+
+      <!-- 一升瓶 本店 -->
+      <div class="plan-card">
+        <div class="plan-header">
+          <div class="plan-title-wrap">
+            <span class="plan-name">一升瓶 本店</span>
+            <span class="plan-location">［三重・松阪］</span>
+          </div>
+        </div>
+
+        <div class="metrics-bar">
+          <div class="metric-item">
+            <span class="metric-label">料理・肉質</span>
+            <span class="metric-icon icon-double-circle">◎</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">費用感</span>
+            <span class="metric-icon icon-double-circle">◎</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">移動・時間</span>
+            <span class="metric-icon icon-double-circle">◎</span>
+          </div>
+        </div>
+
+        <div class="review-box">
+          <div class="review-title">幹事の評価・所感</div>
+          <p class="review-content">
+            気兼ねなく上質な松阪牛焼肉・名物味噌ダレホルモンをガッツリ食べられる。豪華さやかしこまった品格を求める場ではないが、同窓生3人で気兼ねなく旨い肉を囲むなら満足度は一番高い。片道約1時間40分で帰着も早い。
+          </p>
+          <span class="sub-note">目安予算：約 1.1万〜1.3万円／人（交通費・飲食込）</span>
+        </div>
+      </div>
+
+      <!-- 和田金 -->
+      <div class="plan-card">
+        <div class="plan-header">
+          <div class="plan-title-wrap">
+            <span class="plan-name">和田金</span>
+            <span class="plan-location">［三重・松阪］</span>
+          </div>
+        </div>
+
+        <div class="metrics-bar">
+          <div class="metric-item">
+            <span class="metric-label">料理・肉質</span>
+            <span class="metric-icon icon-circle">◯</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">費用感</span>
+            <span class="metric-icon icon-triangle">△</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">移動・時間</span>
+            <span class="metric-icon icon-double-circle">◎</span>
+          </div>
+        </div>
+
+        <div class="review-box">
+          <div class="review-title">幹事の評価・所感</div>
+          <p class="review-content">
+            接待の場や特別なハレの日としては最適。完全個室で仲居さんが炭火ですき焼きを仕上げてくれる非日常感はある。ただし「肉質や料理そのものがずば抜けて最高か」と言われると、コスト（1人約2.5万〜3万）に対してやや割高に感じる側面あり。
+          </p>
+          <span class="sub-note">目安予算：約 2.6万〜3.0万円／人（交通費・飲食込）</span>
+        </div>
+      </div>
+
+      <!-- 神戸牛 -->
+      <div class="plan-card">
+        <div class="plan-header">
+          <div class="plan-title-wrap">
+            <span class="plan-name">神戸牛ステーキ</span>
+            <span class="plan-location">［兵庫・三宮］</span>
+          </div>
+        </div>
+
+        <div class="metrics-bar">
+          <div class="metric-item">
+            <span class="metric-label">料理・肉質</span>
+            <span class="metric-icon icon-double-circle">◎</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">費用感</span>
+            <span class="metric-icon icon-triangle">△</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">移動・時間</span>
+            <span class="metric-icon icon-triangle">△</span>
+          </div>
+        </div>
+
+        <div class="review-box">
+          <div class="review-title">幹事の評価・所感</div>
+          <p class="review-content">
+            鉄板焼きのライブ感、港町の夜景など最も印象が良く小旅行としての満足度は抜群。ただし物理的な距離が遠い。滋賀（大津）まで車で行き、渋滞する大阪をJR新快速でパスする「パーク＆ライド」を活用すれば安く定時でアクセス可能。
+          </p>
+          <span class="sub-note">目安予算：約 2.5万〜3.2万円／人（交通費・新快速・飲食込）</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 一覧サマリーテーブル -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 25%;">候補先</th>
+            <th style="width: 15%; text-align:center;">料理</th>
+            <th style="width: 15%; text-align:center;">費用</th>
+            <th style="width: 15%; text-align:center;">時間</th>
+            <th style="width: 30%;">ひとこと総評</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight: bold;">一升瓶 本店</td>
+            <td class="score icon-double-circle">◎</td>
+            <td class="score icon-double-circle">◎</td>
+            <td class="score icon-double-circle">◎</td>
+            <td style="color: var(--text-muted); font-size: 0.775rem;">気兼ねなく旨い肉を堪能できる高コスパ</td>
+          </tr>
+          <tr>
+            <td style="font-weight: bold;">和田金</td>
+            <td class="score icon-circle">◯</td>
+            <td class="score icon-triangle">△</td>
+            <td class="score icon-double-circle">◎</td>
+            <td style="color: var(--text-muted); font-size: 0.775rem;">格式・接待感は最高峰だが割高感あり</td>
+          </tr>
+          <tr>
+            <td style="font-weight: bold;">神戸牛</td>
+            <td class="score icon-double-circle">◎</td>
+            <td class="score icon-triangle">△</td>
+            <td class="score icon-triangle">△</td>
+            <td style="color: var(--text-muted); font-size: 0.775rem;">小旅行感は抜群。パーク＆ライドで攻略</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="footer-note">
+      ※ 費用・時間は知多・愛知方面発、3名利用時を基準とした概算です。
+    </div>
+  </div>
+
+</body>
+</html>
